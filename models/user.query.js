@@ -6,24 +6,44 @@ exports.postOne = async (info) => {
       email: info.email,
       password: info.password,
     };
-    const newUser = await User.create({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-    });
-    return newUser;
+    const user = await User.findOne({ where: { email: data.email } });
+    if (user) {
+      return "User already exists.";
+    } else {
+      const newUser = await User.create({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+      return newUser;
+    }
   } catch (error) {
     console.log(error);
     throw new Error("Error adding new User to DB.");
   }
 };
 
-exports.finduser = async () => {
+exports.findAlluser = async () => {
   try {
     const user = await User.findAll({
       attributes: ["id", "name", "email", "password"],
     });
 
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error finding User from DB.");
+  }
+};
+
+exports.findOneUser = async (info) => {
+  try {
+    const user = await User.findOne({
+      where: { email: info.email, password: info.password },
+    });
+    // if (!user) {
+    //   return "User not found.";
+    // }
     return user;
   } catch (error) {
     console.log(error);

@@ -12,21 +12,21 @@ exports.signUp = async (req, res) => {
   }
 };
 
-// exports.signIn = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const user = await models.findOne({ email, password });
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-//     res.status(200).json({ user });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-exports.getUser = async (req, res) => {
+exports.signIn = async (req, res) => {
   try {
-    const user = await models.finduser();
+    const { email, password } = req.body;
+    const user = await models.findOneUser({ email, password });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.getAllUser = async (req, res) => {
+  try {
+    const user = await models.findAlluser();
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
