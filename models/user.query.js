@@ -41,9 +41,7 @@ exports.findOneUser = async (info) => {
     const user = await User.findOne({
       where: { email: info.email }, //, password: info.password
     });
-    // if (!user) {
-    //   return "User not found.";
-    // }
+
     return user;
   } catch (error) {
     console.log(error);
