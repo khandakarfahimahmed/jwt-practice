@@ -39,7 +39,7 @@ exports.findAlluser = async () => {
 exports.findOneUser = async (info) => {
   try {
     const user = await User.findOne({
-      where: { email: info.email, password: info.password },
+      where: { email: info.email }, //, password: info.password
     });
     // if (!user) {
     //   return "User not found.";
