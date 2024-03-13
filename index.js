@@ -2,12 +2,13 @@ const express = require("express");
 const BodyParser = require("body-parser");
 const Router = require("./routes");
 const { sequelize } = require("./models/user.model");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
 
 app.use(BodyParser.json());
-
+app.use(cors());
 app.use(Router);
 
 (async function () {
