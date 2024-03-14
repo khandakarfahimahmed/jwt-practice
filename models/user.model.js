@@ -26,5 +26,12 @@ const User = sequelize.define(
     // Other model options
   }
 );
-
+(async () => {
+  try {
+    await sequelize.sync();
+    console.log("Database synchronized");
+  } catch (error) {
+    console.error("Error synchronizing database:", error);
+  }
+})();
 module.exports = { User, sequelize };
