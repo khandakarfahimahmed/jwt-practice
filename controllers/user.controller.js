@@ -3,8 +3,10 @@ const models = require("../models/user.query");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.SECRET_KEY, { expiresIn: "1h" });
+const generateToken = (userId, userName, userEmail) => {
+  return jwt.sign({ userId, userName, userEmail }, process.env.SECRET_KEY, {
+    expiresIn: "1h",
+  });
 };
 
 exports.signUp = async (req, res) => {
@@ -23,7 +25,7 @@ exports.signUp = async (req, res) => {
       password: hashedPassword,
     });
 
-    const token = generateToken(newUser.id);
+    const token = generateToken(newUser.id, newUser.name, newUser.email);
     res.status(201).json({ newUser, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -41,8 +43,8 @@ exports.signIn = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = generateToken(user.id);
-    res.status(200).json({ user, token });
+    const token = generateToken(user.id, user.name, user.email);
+    res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -58,3 +60,29 @@ exports.getAllUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"];
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  } else {
+    const bearer = token.split(" ");
+    const tokenValue = bearer[1];
+    req.token = tokenValue;
+    next();
+  }
+};
+
+// exports.verifyToken = (req, res, next) => {
+//   const bearerHeader = req.headers["authorization"];
+//   if (!bearerHeader || typeof bearerHeader !== "string") {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   } else {
+//     const bearer = bearerHeader.split(" ");
+//     if (bearer.length !== 2 || bearer[0] !== "Bearer") {
+//       return res.status(401).json({ message: "Invalid token format" });
+//     }
+//     const token = bearer[1];
+//     req.token = token;
+//     next();
+//   }
+// };
